@@ -3,6 +3,7 @@
 
 #include "Grid.h"
 #include "Components/BoxComponent.h"
+#include "Tile.h"
 
 // Sets default values
 AGrid::AGrid()
@@ -25,7 +26,36 @@ void AGrid::BeginPlay()
 	FVector BoxExtent = BoundaryBox->GetUnscaledBoxExtent();
 	FString BoxExtentString = BoxExtent.ToCompactString();
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Magenta, FString::Printf(TEXT("%s"), *BoxExtentString));
+
+	//Grid prototyping
+	TileRadius = TileClass.GetDefaultObject()->GetTileMeshSize().X + TileRadiusBuffer;
+	TileDiameter = TileRadius * 2.0f;
+	GridWorldSize = BoxExtent * 2.f;
+	GridSizeX = BoxExtent.X * 2.0f / TileDiameter;
+	GridSizeY = BoxExtent.Y * 2.0f / TileDiameter;
+	CreateGrid();
 	
+}
+
+void AGrid::CreateGrid()
+{
+	FVector WorldBottomLeft = GetActorLocation() - FVector::RightVector * GridWorldSize.X / 2 - FVector::ForwardVector * GridWorldSize.Y / 2;
+	
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Bottom left : %s"), *WorldBottomLeft.ToCompactString()));
+	for (int ix = 0; ix < GridSizeX; ix++)
+	{
+		for (int iy = 0; iy < GridSizeY; iy++)
+		{
+			
+			FVector TileSpawnPoint = WorldBottomLeft + FVector::RightVector * (ix * TileDiameter + TileRadius) + FVector::ForwardVector * (iy * TileDiameter + TileRadius);
+			ATile* NewTile = GetWorld()->SpawnActor<ATile>(TileClass, TileSpawnPoint, FRotator::ZeroRotator);
+			if (NewTile)
+			{
+				NewTile->SetTileCoord(ix, iy, 0);
+				Grid.Add(FVector2D(ix, iy), NewTile);
+			}
+		}
+	}
 }
 
 // Called every frame

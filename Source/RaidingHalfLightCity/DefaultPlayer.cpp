@@ -16,6 +16,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
+//Temp include, to delete!! I dont want the playerPawn to know about tiles
+#include "Tile.h"
+
 // Sets default values
 ADefaultPlayer::ADefaultPlayer()
 {
@@ -120,10 +123,12 @@ void ADefaultPlayer::Move(float InputX, float InputY)
 
 void ADefaultPlayer::Pivot(float Direction)
 {
-	YawInitialRotation = GetActorRotation().Yaw;
-	YawTargetRotation = YawInitialRotation + Direction * 45.f;
-
-	StartPlayerRotation();
+	if (!T_RotatePlayer->IsPlaying())
+	{
+		YawInitialRotation = GetActorRotation().Yaw;
+		YawTargetRotation = YawInitialRotation + Direction * 45.f;
+		StartPlayerRotation();
+	}
 }
 
 void ADefaultPlayer::PivotInput(const FInputActionValue& Value)
@@ -147,6 +152,8 @@ void ADefaultPlayer::LeftClickInput(const FInputActionValue& Value)
 		{
 			AActor* hitActor = HitResult.GetActor();
 
+			ATile* TileActor = Cast<ATile>(hitActor);
+			TileActor->ChangeColor();
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("HittingStuff %s"), *hitActor->GetActorNameOrLabel()));
 		}
 	}

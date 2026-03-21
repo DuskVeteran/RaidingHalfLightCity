@@ -16,6 +16,8 @@ ATile::ATile()
 	TileModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileModel"));
 	TileModel->SetupAttachment(RootComponent);
 
+	
+
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +27,9 @@ void ATile::BeginPlay()
 
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
+
+	DynamicMaterial = TileModel->CreateAndSetMaterialInstanceDynamic(0);
+	
 	
 }
 
@@ -33,5 +38,25 @@ void ATile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATile::SetTileCoord(int x, int y, int z)
+{
+	TileCoord = FIntVector(x, y, z);
+}
+
+void ATile::ChangeColor()
+{
+	if (DynamicMaterial)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Black, FString::Printf(TEXT("CallingCHangeColor")));
+		DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor::Red);
+	}
+	
+}
+
+FVector ATile::GetTileMeshSize()
+{
+	return TileModel->GetStaticMesh()->GetBounds().BoxExtent;
 }
 

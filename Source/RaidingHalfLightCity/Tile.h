@@ -26,6 +26,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	int GridX, GridY;
+
+	UMaterialInstanceDynamic* DynamicMaterial;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -47,5 +52,14 @@ public:
 	bool bWalkable;
 
 	UPROPERTY(EditAnywhere)
-	FVector TileCoord = FVector(0.f, 0.f, 0.f);
+	FIntVector TileCoord = FIntVector(0, 0, 0);
+
+	UFUNCTION()
+	void SetTileCoord(int x, int y, int z);
+
+	UFUNCTION()
+	void ChangeColor();
+
+	UFUNCTION()
+	FVector GetTileMeshSize();
 };

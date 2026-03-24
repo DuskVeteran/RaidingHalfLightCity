@@ -4,11 +4,46 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GenericStructs.h"
 #include "Grid.generated.h"
 
+class AGridMesh;
 class UBoxComponent;
 class ATile;
 
+/*
+USTRUCT(BlueprintType)
+struct FGridData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	UStaticMesh* TileMesh;
+	
+	UPROPERTY()
+	float TileRadius;
+	UPROPERTY()
+	float GridSizeX;
+	UPROPERTY()
+	float GridSizeY;
+	UPROPERTY()
+	FVector GridWorldSize;
+	UPROPERTY()
+	FVector WorldBottomLeft;
+
+	FGridData(UStaticMesh* _TileMesh, float _TileRadius, float _GridSizeX, float _GridSizeY, FVector _GridWorldSize, FVector _WorldBottomLeft) :
+		TileMesh(_TileMesh), TileRadius(_TileRadius), GridSizeX(_GridSizeX), GridSizeY(_GridSizeY), GridWorldSize(_GridWorldSize), WorldBottomLeft(_WorldBottomLeft)
+	{
+
+	}
+
+	~FGridData()
+	{
+
+	}
+	
+};
+*/
 UCLASS()
 class RAIDINGHALFLIGHTCITY_API AGrid : public AActor
 {
@@ -23,15 +58,18 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void CreateGrid();
-
-	TMap<FVector2D, ATile*> Grid;
+	TMap<FVector2D, int32> GridMap;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ATile> TileClass;
+	UStaticMesh* TileMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	AGridMesh* GridMesh;
 
 	FVector GridWorldSize;
 	float TileRadius = 0.f;
+
+	FGridData GridData;
 
 public:	
 	// Called every frame
@@ -47,5 +85,9 @@ public:
 	float TileDiameter;
 	int GridSizeX, GridSizeY;
 
+	void CreateGrid();
+	void ChangeTileColor(FVector MyWorldPos);
+	FVector GridDimensions;
 
+	FIntVector MakeGridKey(FVector WorldPos);
 };

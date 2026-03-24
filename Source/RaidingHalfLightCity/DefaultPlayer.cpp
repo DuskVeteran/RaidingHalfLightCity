@@ -17,7 +17,9 @@
 #include "Camera/CameraComponent.h"
 
 //Temp include, to delete!! I dont want the playerPawn to know about tiles
-#include "Tile.h"
+#include "Grid.h"
+#include "Kismet/GameplayStatics.h"
+#include "GridMesh.h"
 
 // Sets default values
 ADefaultPlayer::ADefaultPlayer()
@@ -150,20 +152,22 @@ void ADefaultPlayer::LeftClickInput(const FInputActionValue& Value)
 		PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, false, HitResult);
 		if (HitResult.bBlockingHit)
 		{
-			AActor* hitActor = HitResult.GetActor();
+			FVector HitPos = HitResult.Location;
+			AActor* HitActor = HitResult.GetActor();
 
-			ATile* TileActor = Cast<ATile>(hitActor);
-			TileActor->ChangeColor();
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("HittingStuff %s"), *hitActor->GetActorNameOrLabel()));
+			if (AGridMesh* HitGrid = Cast<AGridMesh>(HitActor))
+			{
+				Cast<AGrid>(HitGrid->GetOwner())->ChangeTileColor(HitPos);
+
+			}			
 		}
 	}
+
+
 }
 
 void ADefaultPlayer::Handle_RotatePlayer_Update(float val)
 {
-	UE_LOG(LogTemp, Warning, TEXT("StartPivor"));
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("From %f to %f"), YawInitialRotation, YawTargetRotation));
-
 	SetActorRelativeRotation(FRotator(0.f, FMath::Lerp(YawInitialRotation, YawTargetRotation, val), 0.f));
 }
 
@@ -179,5 +183,5 @@ void ADefaultPlayer::StartPlayerRotation()
 
 void ADefaultPlayer::StopPlayerRotation()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("FinishedPivoting")));
+	
 }

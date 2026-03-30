@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GenericStructs.generated.h"
 
+class UGridMeshComponent;
 
 class RAIDINGHALFLIGHTCITY_API GenericStructs
 {
@@ -24,6 +25,8 @@ struct FGridData
 	UPROPERTY()
 	float TileRadius;
 	UPROPERTY()
+	float TileDiameter;
+	UPROPERTY()
 	float GridSizeX;
 	UPROPERTY()
 	float GridSizeY;
@@ -37,8 +40,8 @@ struct FGridData
 
 	}
 	
-	FGridData(UStaticMesh* _TileMesh, float _TileRadius, float _GridSizeX, float _GridSizeY, FVector _GridWorldSize, FVector _WorldBottomLeft) : 
-		TileMesh(_TileMesh), TileRadius(_TileRadius), GridSizeX(_GridSizeX), GridSizeY(_GridSizeY), GridWorldSize(_GridWorldSize), WorldBottomLeft(_WorldBottomLeft)
+	FGridData(UStaticMesh* _TileMesh, float _TileRadius, float _TileDiameter, float _GridSizeX, float _GridSizeY, FVector _GridWorldSize, FVector _WorldBottomLeft) : 
+		TileMesh(_TileMesh), TileRadius(_TileRadius), TileDiameter(_TileDiameter), GridSizeX(_GridSizeX), GridSizeY(_GridSizeY), GridWorldSize(_GridWorldSize), WorldBottomLeft(_WorldBottomLeft)
 	{
 
 	}
@@ -50,3 +53,26 @@ struct FGridData
 	
 };
 
+
+USTRUCT(BlueprintType)
+struct FTileIndex
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 Index;
+	UPROPERTY()
+	UGridMeshComponent* GridComp;
+
+	FTileIndex()
+	{
+
+	}
+
+	FTileIndex(int32 _Index, UGridMeshComponent* _GridComp) :
+		Index(_Index), GridComp(_GridComp)
+	{
+
+	}
+
+};

@@ -19,7 +19,7 @@
 //Temp include, to delete!! I dont want the playerPawn to know about tiles
 #include "Grid.h"
 #include "Kismet/GameplayStatics.h"
-#include "GridMesh.h"
+#include "DefaultTerrain.h"
 
 // Sets default values
 ADefaultPlayer::ADefaultPlayer()
@@ -155,11 +155,24 @@ void ADefaultPlayer::LeftClickInput(const FInputActionValue& Value)
 			FVector HitPos = HitResult.Location;
 			AActor* HitActor = HitResult.GetActor();
 
-			if (AGridMesh* HitGrid = Cast<AGridMesh>(HitActor))
+			if (AGrid* HitGrid = Cast<AGrid>(HitActor))
 			{
-				Cast<AGrid>(HitGrid->GetOwner())->ChangeTileColor(HitPos);
+				HitGrid->ChangeTileColor(HitPos);
+				//temp
+				FIntVector GridKey = HitGrid->MakeGridKey(HitPos);
+				FVector VectorKey = FVector(GridKey);
+				//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("%s"), *VectorKey.ToCompactString()));
+			}
 
-			}			
+			if (ADefaultTerrain* HitTerrain = Cast<ADefaultTerrain>(HitActor))
+			{
+				HitTerrain->ChangeTileColor(HitPos);
+				FIntVector GridKey = HitTerrain->MakeKey(HitPos);
+				FVector VectorKey = FVector(GridKey);
+				//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("%s"), *VectorKey.ToCompactString()));
+			}
+
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Hittin shit")));
 		}
 	}
 

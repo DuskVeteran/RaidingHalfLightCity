@@ -5,12 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
-//#include "GameFramework/SpringArmComponent.h"
 
-//#include "EnhancedInputSubsystems.h"
-//#include "InputAction.h"
-//#include "InputActionValue.h"
-//#include "EnhancedInputComponent.h"
 
 #include "Components/TimelineComponent.h"
 #include "DefaultPlayer.generated.h"
